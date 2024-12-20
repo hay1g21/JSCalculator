@@ -1,3 +1,78 @@
 .intro{
+    font-size: large;
+    color: rgb(10, 14, 12);
+}
+
+.outputbar{
+    background-color: black;
+    color: aliceblue;
+    position:relative;
     
+}
+
+.outputtext{
+    position: absolute;
+    color: aliceblue;
+    font-family: Helvetica;
+    font-size: 4em;
+    bottom:8px;
+    right:16px;
+}
+.outsidegrid{
+    display: grid;
+    font-size: large;
+    text-align: center;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+.butsection{
+    font-family: Helvetica;
+    display: grid;
+    font-size: large;
+    text-align: center;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.butsection2{
+    font-family: Helvetica;
+    display: grid;
+    font-size: 4em;
+    text-align: center;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+
+.twocolumn{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(50px, auto);
+}
+.buttons{
+   
+    display: grid;
+    font-size: large;
+    text-align: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    font-size:2em;
+    grid-auto-rows: minmax(100px, auto);
+
+    background-color: rgb(255, 255, 255);
+}
+
+.buttons2{
+   
+    display: grid;
+    font-size: large;
+    text-align: center;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    font-size:2em;
+    grid-auto-rows: minmax(100px, auto);
+
+    background-color: rgb(226, 224, 222);
 }
