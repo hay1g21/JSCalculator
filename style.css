@@ -74,5 +74,15 @@
     font-size:2em;
     grid-auto-rows: minmax(100px, auto);
 
-    background-color: rgb(226, 224, 222);
+    background-color: rgb(165, 156, 147);
+}
+
+.buttondark{
+    background-color: rgb(194, 189, 189);
+}
+button{
+    font-family: Helvetica;
+    
+
+    font-size: 1em;
 }

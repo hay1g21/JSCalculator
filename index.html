@@ -3,6 +3,7 @@
     <head>
         <title>First webpage</title>
         <link href="style.css" rel="stylesheet"/>
+        
     </head>
 <body>
 
@@ -13,33 +14,41 @@
 
 
 
-<div class ="outsidegrid">
+<div id="gom" class ="outsidegrid">
     <div class = "outputbar">
         <div class = "outputtext">0</div>
     </div>
-    <div class = "buttons2">
-        <div><p>+</p></div>
-        <div><p>-</p></div>
-        <div><p>x</p></div>
-        <div><p>/</p></div>
+    <div class = "calculatorkeys">
+        <div class = "buttons2">
+            <button class="buttondark" data-action="add">+</button>
+            <button  class="buttondark" data-action="subtract">-</button>
+            <button  class="buttondark" data-action="multiply">x</button>
+            <button  class="buttondark" data-action="divide">/</button>
+        </div>
+        <div class = "butsection">
+            <div class="buttons">
+                
+                <button>7</button>
+                <button>8</button>
+                <button>9</button>
+                <button>4</button>
+                <button>5</button>
+                <button>6</button>
+                <button>3</button>
+                <button>2</button>
+                <button>1</button>
+                <button>0</button>
+                <button data-action="decimal">.</button>
+                <button data-action="clear">C</button>
+            </div>
+            <div class="butsection2">
+                <button data-action="calculate" style="background-color: orange;">=</button>
+            </div>
+            </div>
     </div>
-    <div class = "butsection">
-    <div class="buttons">
-        
-        <div><p>7</p></div>
-        <div><p>8</p></div>
-        <div><p>9</p></div>
-        <div><p>4</p></div>
-        <div><p>5</p></div>
-        <div><p>6</p></div>
-        <div><p>3</p></div>
-        <div><p>2</p></div>
-        <div><p>1</p></div>
-    </div>
-    <div class="butsection2">
-        <div style="background-color: orange;"><p>=</p></div>
-    </div>
-    </div>
+    
+   
 </div>
+<script src="script.js"></script>
 </body>
 </html>
