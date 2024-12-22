@@ -36,7 +36,6 @@ keys.addEventListener('click', e => {
             action === 'subtract' ||
             action === 'multiply' ||
             action === 'divide'
-
         ) {
 
             const firstValue = calculator.dataset.firstValue
@@ -45,16 +44,24 @@ keys.addEventListener('click', e => {
 
             //if a new operator is selected, do a calc, cant spam operator
             if(firstValue && operator && previousKeyType !== 'operator'){
-                display.textContent = calculate(firstValue, operator, secondValue)
+                const calcValue = calculate(firstValue, operator, secondValue)
+                display.textContent = calcValue
+
+                //set first val to what came before
+                calculator.dataset.firstValue = calcValue
+                
+            }else{
+                //adds first value based on what came before the result e.g 8-2 = 6, 1st num = 2
+                calculator.dataset.firstValue = displayedNum
             }
             //adds new custom att for checking prev key
-            //adds first value based on what came before the result e.g 8-2 = 6, 1st num = 2
-            calculator.dataset.firstValue = displayedNum
+            key.classList.add('selectOp')
+            
             calculator.dataset.operator = action
             calculator.dataset.previousKeyType = 'operator'
 
             console.log('operator key!')
-            key.classList.add('selectOp')
+          
         }
         if (
             action === 'decimal') {
@@ -75,11 +82,18 @@ keys.addEventListener('click', e => {
         if (
             action === 'calculate') {
             console.log("calculate key")
-            const secondValue = displayedNum
-            const firstValue = calculator.dataset.firstValue
+            let firstValue = calculator.dataset.firstValue
             const op = calculator.dataset.operator
-
-            display.textContent = calculate(firstValue, op, secondValue)
+            const secondValue = displayedNum
+            
+            
+            if(firstValue){
+                const calcedValue = calculate(firstValue, op, secondValue)
+                display.textContent = calcedValue
+            }
+            
+            //update
+           
             calculator.dataset.previousKeyType = 'calculate'
         }
         //loop thru and remove all selected
