@@ -9,11 +9,58 @@ console.log(document)
 console.log(calculator)
 console.log(keys)
 
+//pure function - doesnt change state but creates what needs to be on display
+const createResultsString = () =>{
+    /*
+    vars requires: (keep track of this for refactoring)
+    1. keycontent
+    2. displayed num
+    3. prev key type
+    4. action
+    5. first value
+    6. operator
+    */
+    if (!action) {
+        
+        return displayedNum === '0' 
+            || previousKeyType === 'operator' 
+            || previousKeyType === 'calculate' ? keyContent : displayedNum + keyContent
+    }
 
+    if (action === 'decimal') {
+        //console.log("decimal")
+        if(!displayedNum.includes('.')){
+            return displayedNum + "."
+        }
+        if(previousKeyType === 'operator' || previousKeyType === 'calculate'){
+            return textContent = '0.'
+        }
+        //if all checks fail
+        return displayedNum;
+    }
+
+    if (
+        action === 'add' ||
+        action === 'subtract' ||
+        action === 'multiply' ||
+        action === 'divide'
+    ) {
+
+        const firstValue = calculator.dataset.firstValue
+        const operator = calculator.dataset.operator
+
+        //if a new operator is selected, do a calc, cant spam operator
+        return firstValue 
+        && operator 
+        && previousKeyType !== 'operator' 
+        && previousKeyType !== 'calculate' ? calculate(firstValue, operator, displayedNum) : displayedNum
+    }
+}
 keys.addEventListener('click', e => {
     if (e.target.matches('button')) {
         //dowhatever
 
+        //const resultString = createResultsString()
         const key = e.target
         const action = key.dataset.action //grabs from data- then goes to action (second part)
         const keyContent = key.textContent //gets text cointent of the button
@@ -78,6 +125,16 @@ keys.addEventListener('click', e => {
         if (
             action === 'clear') {
             console.log("clear key")
+            if(key.textContent ==='AC'){
+                calculator.dataset.firstValue = ''
+                calculator.dataset.operator = ''
+                calculator.dataset.previousKeyType = ''
+                calculator.dataset.modValue = ''
+            }else{
+                key.textContent = 'AC'
+            }
+           
+            display.textContent = 0
             calculator.dataset.previousKeyType = 'clear'
         }
         if (
@@ -102,7 +159,11 @@ keys.addEventListener('click', e => {
             calculator.dataset.modValue = secondValue
             calculator.dataset.previousKeyType = 'calculate'
         }
-        //loop thru and remove all selected
+        if(
+            action !== 'clear'){
+            const clearButton = calculator.querySelector('[data-action=clear]')
+            clearButton.textContent = 'CE'
+        }
 
     }
 
@@ -115,17 +176,12 @@ const calculate = (n1, operator, n2) => {
     //convert them to numbers first!!!
     let num1 = parseFloat(n1)
     let num2 = parseFloat(n2)
-    if(operator === 'add'){
-        result = num1 + num2;
-    }else if(operator === 'subtract'){
-        result = num1 - num2;
-    }
-    else if(operator === 'multiply'){
-        result = num1 * num2;
-    }
-    else if(operator === 'divide'){
-        result = num1 / num2;
-    }
+    if(operator === 'add') return num1 + num2;
+    if(operator === 'subtract')return num1 - num2;
+    if(operator === 'multiply')return num1 * num2;
+    if(operator === 'divide')return result = num1 / num2;
+       
+    
 
-    return result;
+   
 }
