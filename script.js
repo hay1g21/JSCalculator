@@ -88,7 +88,75 @@ const createResultsString = (key, displayedNum, state) =>{
         :displayedNum; //need code for failed path
          
     }
-      
+    
+    //updates state of calc and also the displayed text
+    const updateCalculatorState = (key, calculator) =>{
+        /*
+        vars needed:
+        1. key
+        2. displayednum
+        3. calcvalue
+        */
+        const keyType = getKeyType(key)
+         //removes grey out from previously selected keys
+        Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
+        if(keyType === 'number'){
+           
+
+        }
+    
+        if (keyType === 'decimal') {
+           
+
+        }
+        //operators
+        if (keyType === 'operator') {
+            
+            const firstValue = calculator.dataset.firstValue
+            const operator = calculator.dataset.operator
+
+            //if a new operator is selected, do a calc, cant spam operator
+            calculator.dataset.firstValue = firstValue 
+            && operator 
+            && previousKeyType 
+            !== 'operator' && 
+            previousKeyType !== 'calculate'
+            ? calcValue 
+            : displayedNum
+            //adds new custom att for checking prev key
+            key.classList.add('selectOp')
+            
+            calculator.dataset.operator = key.dataset.action
+          
+        
+        }
+    
+        if (keyType === 'clear') {
+            
+            if(key.textContent ==='AC'){
+                calculator.dataset.firstValue = ''
+                calculator.dataset.operator = ''
+                calculator.dataset.previousKeyType = ''
+                calculator.dataset.modValue = ''
+            }else{
+                key.textContent = 'AC'
+            }
+            calculator.dataset.previousKeyType = 'clear'
+        }
+        if(
+            keyType !== 'clear'){
+            const clearButton = calculator.querySelector('[data-action=clear]')
+            clearButton.textContent = 'CE'
+        }
+
+    
+        if (keyType === 'calculate') {
+          
+        }
+
+        calculator.dataset.previousKeyType = keyType
+
+    }
    
 }
 keys.addEventListener('click', e => {
