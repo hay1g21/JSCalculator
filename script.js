@@ -48,14 +48,15 @@ const createResultsString = (key, displayedNum, state) =>{
     const operator = state.operator
     const firstValue = state.firstValue
 
-    if (!action) {
-        
+    const keyType = getKeyType(key) //makes it look nicer
+
+    if(keyType === 'number'){
         return displayedNum === '0' 
-            || previousKeyType === 'operator' 
-            || previousKeyType === 'calculate' ? keyContent : displayedNum + keyContent
+        || previousKeyType === 'operator' 
+        || previousKeyType === 'calculate' ? keyContent : displayedNum + keyContent
     }
 
-    if (action === 'decimal') {
+    if (keyType === 'decimal') {
         //console.log("decimal")
         if(!displayedNum.includes('.')){
             return displayedNum + "."
@@ -67,24 +68,19 @@ const createResultsString = (key, displayedNum, state) =>{
         return displayedNum;
     }
     //operators
-    if (
-        action === 'add' ||
-        action === 'subtract' ||
-        action === 'multiply' ||
-        action === 'divide'
-    ) {
-
+    if (keyType === 'operator') {
         //if a new operator is selected, do a calc, cant spam operator
         return firstValue 
         && operator 
         && previousKeyType !== 'operator' 
-        && previousKeyType !== 'calculate' ? calculate(firstValue, operator, displayedNum) : displayedNum
+        && previousKeyType !== 'calculate' 
+        ? calculate(firstValue, operator, displayedNum) 
+        : displayedNum
     }
 
-    if (action === 'clear') return 0;
+    if (keyType === 'clear') return 0;
 
-    if (
-        action === 'calculate') {
+    if (keyType === 'calculate') {
         return firstValue 
         ?   previousKeyType === 'calculate'
             ? calculate(displayedNum, op, calculator.dataset.modValue) //redoes saem calculation  
