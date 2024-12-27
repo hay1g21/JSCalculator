@@ -9,17 +9,45 @@ console.log(document)
 console.log(calculator)
 console.log(keys)
 
+//add limit to numbers in display so it remains nice
+
+
+
+const getKeyType = (key) => {
+    const action = key.action
+    if(!action) return 'number'
+    if(
+        action === 'add' ||
+        action === 'subtract' ||
+        action === 'multiply' ||
+        action === 'divide'
+    ) return 'operator'
+    //everything else returned as is
+    return action
+}
 //pure function - doesnt change state but creates what needs to be on display
-const createResultsString = () =>{
+//key - gets action and keycontent
+//state - from calc.dataset, gets firstval, modval, prevkey type, operator
+//displayed num on its own
+const createResultsString = (key, displayedNum, state) =>{
     /*
     vars requires: (keep track of this for refactoring)
     1. keycontent
     2. displayed num
     3. prev key type
     4. action
-    5. first value
-    6. operator
+    5. calculator.dataset.first value
+    6. calculator.datsaset.operator
+    7.calculator.dataset.modvalue
     */
+
+    const keyContent = key.keyContent
+    const previousKeyType = state.previousKeyType
+    const action = key.action
+    const modvalue = state.modValue
+    const operator = state.operator
+    const firstValue = state.firstValue
+
     if (!action) {
         
         return displayedNum === '0' 
@@ -38,7 +66,7 @@ const createResultsString = () =>{
         //if all checks fail
         return displayedNum;
     }
-
+    //operators
     if (
         action === 'add' ||
         action === 'subtract' ||
@@ -46,15 +74,26 @@ const createResultsString = () =>{
         action === 'divide'
     ) {
 
-        const firstValue = calculator.dataset.firstValue
-        const operator = calculator.dataset.operator
-
         //if a new operator is selected, do a calc, cant spam operator
         return firstValue 
         && operator 
         && previousKeyType !== 'operator' 
         && previousKeyType !== 'calculate' ? calculate(firstValue, operator, displayedNum) : displayedNum
     }
+
+    if (action === 'clear') return 0;
+
+    if (
+        action === 'calculate') {
+        return firstValue 
+        ?   previousKeyType === 'calculate'
+            ? calculate(displayedNum, op, calculator.dataset.modValue) //redoes saem calculation  
+            : calculate(firstValue, op, displayedNum) //does regular calc
+        :displayedNum; //need code for failed path
+         
+    }
+      
+   
 }
 keys.addEventListener('click', e => {
     if (e.target.matches('button')) {
@@ -67,9 +106,9 @@ keys.addEventListener('click', e => {
         const displayedNum = display.textContent //gets display number before changing
         const previousKeyType = calculator.dataset.previousKeyType
 
+        //removes grey out from previously selected keys
         Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
         if (!action) {
-            //console.log("Number key")
             if (displayedNum === '0' || previousKeyType === 'operator' || previousKeyType === 'calculate') {
                 display.textContent = keyContent
             } else {
@@ -122,8 +161,7 @@ keys.addEventListener('click', e => {
             calculator.dataset.previousKeyType = 'decimal'
             
         }
-        if (
-            action === 'clear') {
+        if (action === 'clear') {
             console.log("clear key")
             if(key.textContent ==='AC'){
                 calculator.dataset.firstValue = ''
