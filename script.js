@@ -14,7 +14,7 @@ console.log(keys)
 
 
 const getKeyType = (key) => {
-    const action = key.action
+    const action = key.dataset.action
     if(!action) return 'number'
     if(
         action === 'add' ||
@@ -24,6 +24,18 @@ const getKeyType = (key) => {
     ) return 'operator'
     //everything else returned as is
     return action
+}
+
+//updates visuals e.g applying grey class and ac/ce button
+const updateVisualState = (key,calculator) => {
+    const keyType = getKeyType(key)
+    Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
+    //adds new custom att for checking prev key
+    if (keyType === 'operator') key.classList.add('selectOp')
+    if(keyType !== 'clear'){
+        const clearButton = calculator.querySelector('[data-action=clear]')
+        clearButton.textContent = 'CE'
+    }
 }
 //pure function - doesnt change state but creates what needs to be on display
 //key - gets action and keycontent
@@ -41,19 +53,21 @@ const createResultsString = (key, displayedNum, state) =>{
     7.calculator.dataset.modvalue
     */
 
-    const keyContent = key.keyContent
+    const keyContent = key.textContent //get text content!!
     const previousKeyType = state.previousKeyType
-    const action = key.action
-    const modvalue = state.modValue
-    const operator = state.operator
+    const op = state.operator
     const firstValue = state.firstValue
 
     const keyType = getKeyType(key) //makes it look nicer
-
+    console.log(keyType)
     if(keyType === 'number'){
-        return displayedNum === '0' 
-        || previousKeyType === 'operator' 
-        || previousKeyType === 'calculate' ? keyContent : displayedNum + keyContent
+        
+        return displayedNum === '0' || 
+        previousKeyType === 'operator' || 
+        previousKeyType === 'calculate' 
+        ? keyContent 
+        : displayedNum + keyContent
+        
     }
 
     if (keyType === 'decimal') {
@@ -71,10 +85,10 @@ const createResultsString = (key, displayedNum, state) =>{
     if (keyType === 'operator') {
         //if a new operator is selected, do a calc, cant spam operator
         return firstValue 
-        && operator 
+        && op 
         && previousKeyType !== 'operator' 
         && previousKeyType !== 'calculate' 
-        ? calculate(firstValue, operator, displayedNum) 
+        ? calculate(firstValue, op, displayedNum) 
         : displayedNum
     }
 
@@ -88,91 +102,81 @@ const createResultsString = (key, displayedNum, state) =>{
         :displayedNum; //need code for failed path
          
     }
+}
+//updates state of calc and also the displayed text
+const updateCalculatorState = (key, calculator, calcValue, displayedNum) =>{
+    /*
+    vars needed:
+    1. key
+    2. displayednum
+    3. calcvalue
+    4. calculator
+    5.modValue
+    */
+    const keyType = getKeyType(key)
+    const previousKeyType = calculator.dataset.previousKeyType
     
-    //updates visuals e.g applying grey class and ac/ce button
-    const updateVisualState = (key) => {
-        const keyType = getKeyType(key)
-        Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
-        //adds new custom att for checking prev key
-        if (keyType === 'operator') key.classList.add('selectOp')
-        if(keyType !== 'clear'){
-            const clearButton = calculator.querySelector('[data-action=clear]')
-            clearButton.textContent = 'CE'
-        }
+     //removes grey out from previously selected keys
+    
+    if(keyType === 'number'){
+       
+
     }
-    //updates state of calc and also the displayed text
-    const updateCalculatorState = (key, calculator, calcValue, displayedNum) =>{
-        /*
-        vars needed:
-        1. key
-        2. displayednum
-        3. calcvalue
-        4. calculator
-        5.modValue
-        */
-        const keyType = getKeyType(key)
-         //removes grey out from previously selected keys
+
+    if (keyType === 'decimal') {
+       
+
+    }
+    //operators
+    if (keyType === 'operator') {
         
-        if(keyType === 'number'){
-           
+        const firstValue = calculator.dataset.firstValue
+        const operator = calculator.dataset.operator
 
-        }
-    
-        if (keyType === 'decimal') {
-           
-
-        }
-        //operators
-        if (keyType === 'operator') {
-            
-            const firstValue = calculator.dataset.firstValue
-            const operator = calculator.dataset.operator
-
-            //if a new operator is selected, do a calc, cant spam operator
-            calculator.dataset.firstValue = firstValue 
-            && operator 
-            && previousKeyType 
-            !== 'operator' && 
-            previousKeyType !== 'calculate'
-            ? calcValue 
-            : displayedNum
-            
-            
-            calculator.dataset.operator = key.dataset.action
-        }
-        if (keyType === 'clear') {
-            
-            if(key.textContent ==='AC'){
-                calculator.dataset.firstValue = ''
-                calculator.dataset.operator = ''
-                calculator.dataset.previousKeyType = ''
-                calculator.dataset.modValue = ''
-            }else{
-                key.textContent = 'AC'
-            }
-            calculator.dataset.previousKeyType = 'clear'
-        }
-        if (keyType === 'calculate') {
-            let firstValue = calculator.dataset.firstValue
-           
-            
-            
-            if(firstValue){
-                if(previousKeyType === 'calculate'){
-                    secondValue = calculator.dataset.modValue
-                }
-            }
-            calculator.dataset.modValue = firstValue && previousKeyType === 'calculate'
-            ? modValue
-            : displayedNum  //carry the prev second val into the thing, like 5 - **1** - **1**
-           
-           
-        }
-
-        calculator.dataset.previousKeyType = keyType
-
+        //if a new operator is selected, do a calc, cant spam operator
+        calculator.dataset.firstValue = firstValue 
+        && operator 
+        && previousKeyType 
+        !== 'operator' && 
+        previousKeyType !== 'calculate'
+        ? calcValue 
+        : displayedNum
+        
+        
+        calculator.dataset.operator = key.dataset.action
     }
-   
+    if (keyType === 'clear') {
+        
+        if(key.textContent ==='AC'){
+            calculator.dataset.firstValue = ''
+            calculator.dataset.operator = ''
+            calculator.dataset.previousKeyType = ''
+            calculator.dataset.modValue = ''
+        }else{
+            key.textContent = 'AC'
+        }
+        calculator.dataset.previousKeyType = 'clear'
+    }
+    if (keyType === 'calculate') {
+        let firstValue = calculator.dataset.firstValue
+       
+        
+        
+        if(firstValue){
+            if(previousKeyType === 'calculate'){
+                secondValue = calculator.dataset.modValue
+            }
+        }
+        calculator.dataset.modValue = firstValue && previousKeyType === 'calculate'
+        ? calculator.dataset.modValue
+        : displayedNum  //carry the prev second val into the thing, like 5 - **1** - **1**
+       
+       
+    }
+    calculator.dataset.previousKeyType = keyType
+
+    
+
 }
 keys.addEventListener('click', e => {
     if (e.target.matches('button')) {
@@ -180,108 +184,16 @@ keys.addEventListener('click', e => {
 
         //const resultString = createResultsString()
         const key = e.target
-        const action = key.dataset.action //grabs from data- then goes to action (second part)
-        const keyContent = key.textContent //gets text cointent of the button
         const displayedNum = display.textContent //gets display number before changing
-        const previousKeyType = calculator.dataset.previousKeyType
 
         //removes grey out from previously selected keys
-        Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
-        if (!action) {
-            if (displayedNum === '0' || previousKeyType === 'operator' || previousKeyType === 'calculate') {
-                display.textContent = keyContent
-            } else {
-                display.textContent = displayedNum + keyContent
-            }
-            calculator.dataset.previousKeyType = 'number'
-        }
-        //operators
-        if (
-            action === 'add' ||
-            action === 'subtract' ||
-            action === 'multiply' ||
-            action === 'divide'
-        ) {
 
-            const firstValue = calculator.dataset.firstValue
-            const operator = calculator.dataset.operator
-            const secondValue = displayedNum
-
-            //if a new operator is selected, do a calc, cant spam operator
-            if(firstValue && operator && previousKeyType !== 'operator' && previousKeyType !== 'calculate'){
-                const calcValue = calculate(firstValue, operator, secondValue)
-                display.textContent = calcValue
-
-                //set first val to what came before
-                calculator.dataset.firstValue = calcValue
-                
-            }else{
-                //no calcs, put the displayed num as the first value
-                //adds first value based on what came before the result e.g 8-2 = 6, 1st num = 2
-                calculator.dataset.firstValue = displayedNum
-            }
-            //adds new custom att for checking prev key
-            key.classList.add('selectOp')
-            
-            calculator.dataset.operator = action
-            calculator.dataset.previousKeyType = 'operator'
-
-            console.log('operator key!')
-          
-        }
-        if (
-            action === 'decimal') {
-            //console.log("decimal")
-            if(!displayedNum.includes('.')){
-                display.textContent = displayedNum + "."
-            }else if(previousKeyType === 'operator' || previousKeyType === 'calculate'){
-                display.textContent = '0.'
-            }
-            calculator.dataset.previousKeyType = 'decimal'
-            
-        }
-        if (action === 'clear') {
-            console.log("clear key")
-            if(key.textContent ==='AC'){
-                calculator.dataset.firstValue = ''
-                calculator.dataset.operator = ''
-                calculator.dataset.previousKeyType = ''
-                calculator.dataset.modValue = ''
-            }else{
-                key.textContent = 'AC'
-            }
-           
-            display.textContent = 0
-            calculator.dataset.previousKeyType = 'clear'
-        }
-        if (
-            action === 'calculate') {
-            console.log("calculate key")
-            let firstValue = calculator.dataset.firstValue
-            const op = calculator.dataset.operator
-            var secondValue = displayedNum
-            
-            
-            if(firstValue){
-                if(previousKeyType === 'calculate'){
-                    firstValue = displayedNum
-                    secondValue = calculator.dataset.modValue
-                }
-                display.textContent = calculate(firstValue, op, secondValue)
-            }
-
-            
-            //update
-            //carry the prev second val into the thing, like 5 - **1** - **1**
-            calculator.dataset.modValue = secondValue
-            calculator.dataset.previousKeyType = 'calculate'
-        }
-        if(
-            action !== 'clear'){
-            const clearButton = calculator.querySelector('[data-action=clear]')
-            clearButton.textContent = 'CE'
-        }
-
+        //Pure
+        const resultString = createResultsString(key,displayedNum,calculator.dataset)
+        console.log(resultString)
+        display.textContent = resultString
+        updateCalculatorState(key, calculator, resultString, displayedNum)
+        updateVisualState(key,calculator)
     }
 
 })
@@ -296,7 +208,13 @@ const calculate = (n1, operator, n2) => {
     if(operator === 'add') return num1 + num2;
     if(operator === 'subtract')return num1 - num2;
     if(operator === 'multiply')return num1 * num2;
-    if(operator === 'divide')return result = num1 / num2;
+    if(operator === 'divide'){
+        if(num1 === 0 & num2 === 0){
+            //error case
+            return 0;
+        }
+        return result = num1 / num2;
+    }
        
     
 
