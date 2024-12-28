@@ -89,17 +89,30 @@ const createResultsString = (key, displayedNum, state) =>{
          
     }
     
+    //updates visuals e.g applying grey class and ac/ce button
+    const updateVisualState = (key) => {
+        const keyType = getKeyType(key)
+        Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
+        //adds new custom att for checking prev key
+        if (keyType === 'operator') key.classList.add('selectOp')
+        if(keyType !== 'clear'){
+            const clearButton = calculator.querySelector('[data-action=clear]')
+            clearButton.textContent = 'CE'
+        }
+    }
     //updates state of calc and also the displayed text
-    const updateCalculatorState = (key, calculator) =>{
+    const updateCalculatorState = (key, calculator, calcValue, displayedNum) =>{
         /*
         vars needed:
         1. key
         2. displayednum
         3. calcvalue
+        4. calculator
+        5.modValue
         */
         const keyType = getKeyType(key)
          //removes grey out from previously selected keys
-        Array.from(key.parentNode.children).forEach(k => k.classList.remove('selectOp'))
+        
         if(keyType === 'number'){
            
 
@@ -123,14 +136,10 @@ const createResultsString = (key, displayedNum, state) =>{
             previousKeyType !== 'calculate'
             ? calcValue 
             : displayedNum
-            //adds new custom att for checking prev key
-            key.classList.add('selectOp')
+            
             
             calculator.dataset.operator = key.dataset.action
-          
-        
         }
-    
         if (keyType === 'clear') {
             
             if(key.textContent ==='AC'){
@@ -143,15 +152,21 @@ const createResultsString = (key, displayedNum, state) =>{
             }
             calculator.dataset.previousKeyType = 'clear'
         }
-        if(
-            keyType !== 'clear'){
-            const clearButton = calculator.querySelector('[data-action=clear]')
-            clearButton.textContent = 'CE'
-        }
-
-    
         if (keyType === 'calculate') {
-          
+            let firstValue = calculator.dataset.firstValue
+           
+            
+            
+            if(firstValue){
+                if(previousKeyType === 'calculate'){
+                    secondValue = calculator.dataset.modValue
+                }
+            }
+            calculator.dataset.modValue = firstValue && previousKeyType === 'calculate'
+            ? modValue
+            : displayedNum  //carry the prev second val into the thing, like 5 - **1** - **1**
+           
+           
         }
 
         calculator.dataset.previousKeyType = keyType
